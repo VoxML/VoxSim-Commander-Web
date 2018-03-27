@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>VoxSim Commander</title>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+<script type="text/javascript" language="javascript">
+port = 8220
+lastReceivedData = ""
+verb = ""
+theme = ""
+relation = ""
+dest = ""
+
+setTimeout(refreshServer,100);
+
+function refreshServer() {
+	var xhttp = new XMLHttpRequest();
+	xhttp.open("GET", "http://127.0.0.1:" + port + "/server", true);
+	xhttp.onreadystatechange = function() {
+    	if (this.readyState == 4 && this.status == 200) {
+			if ((this.responseText != lastReceivedData) && (JSON.parse(this.responseText)["input"] == "") && (JSON.parse(this.responseText)["question"] == "") && (JSON.parse(this.responseText)["utter"] == "")) {
+				lastReceivedData = this.responseText
+				if (theme == "") {
+					theme = JSON.parse(this.responseText)["clicked"];
+					document.getElementById("theme").value = theme
+				}
+				else if (dest == "") {
+					dest = JSON.parse(this.responseText)["clicked"];
+					document.getElementById("dest").value = dest
+				}
+    			document.getElementById("input").value = verb + " " + theme + " " + relation + " " + dest
+			}
+    	}
+	};
+	xhttp.send(null)
+	setTimeout(refreshServer,100);
+}
+
+function Execute() {
+	if (document.getElementById('input').value != "") {
+	    var xhttp = new XMLHttpRequest();
+	    xhttp.open("POST", "http://127.0.0.1:" + port + "/server", true);
+	    xhttp.setRequestHeader("Content-Type", "application/json");
+		var dict = {}
+		var command = document.getElementById('input').value
+		dict["input"] = command
+		dict["question"] = ""
+		dict["utter"] = ""
+		dict["theme"] = ""
+		dict["dest"] = ""
+		var data = JSON.stringify(dict)
+    	xhttp.send(data);
+		ClearAll()
+	}
+}
+
+function Ask() {
+	if (document.getElementById('input').value != "") {
+	    var xhttp = new XMLHttpRequest();
+	    xhttp.open("POST", "http://127.0.0.1:" + port + "/server", true);
+	    xhttp.setRequestHeader("Content-Type", "application/json");
+		var dict = {}
+		var input = document.getElementById('input').value
+		dict["input"] = ""
+		if (input.startsWith("put") || input.startsWith("slide")) 	{
+			dict["question"] = "Should I " + input + "?"
+		}
+		else {
+			dict["question"] = input.trim().charAt(0).toUpperCase() + input.trim().slice(1) + "?"
+		}
+		dict["utter"] = ""
+		dict["theme"] = ""
+		dict["dest"] = ""	
+		var data = JSON.stringify(dict)
+    	xhttp.send(data);
+	}
+}
+
+function Utter(text) {
+	if (text != "") {
+    	var xhttp = new XMLHttpRequest();
+    	xhttp.open("POST", "http://127.0.0.1:" + port + "/server", true);
+    	xhttp.setRequestHeader("Content-Type", "application/json");
+		var dict = {}
+		dict["input"] = ""
+		dict["question"] = ""
+		dict["utter"] = text
+		dict["theme"] = ""
+		dict["dest"] = ""
+		var data = JSON.stringify(dict)
+    	xhttp.send(data);
+	}
+}
+
+function AddVerb(text) {
+	verb = text.split('.')[0].toLowerCase()
+	document.getElementById('input').value = verb + " " + theme + " " + relation + " " + dest
+}
+
+function AddRelation(text) {
+	relation = text.split('.')[0].toLowerCase()
+	document.getElementById('input').value = verb + " " + theme + " " + relation + " " + dest
+}
+
+function ClearTheme() {
+	theme = ""
+	document.getElementById('theme').value = theme
+	document.getElementById('input').value = verb + " " + theme + " " + relation + " " + dest
+}
+
+function ClearDest() {
+	dest = ""
+	document.getElementById('dest').value = dest
+	document.getElementById('input').value = verb + " " + theme + " " + relation + " " + dest
+}
+
+function ClearAll() {
+	verb = ""
+	theme = ""
+	relation = ""
+	dest = ""
+	document.getElementById('relations').selectedIndex = 0
+	document.getElementById('theme').value = theme
+	document.getElementById('dest').value = dest
+	document.getElementById('input').value = verb + " " + theme + " " + relation + " " + dest
+}
+
+</script>
+</head>
+
+<body>
+<div id="show">
+<p><button type="submit" onclick="AddVerb(this.innerHTML)">Put...</button>
+<button type="submit" onclick="AddVerb(this.innerHTML)">Slide...</button>
+<input type="text" id="theme" size="17" readonly />
+<button type="submit" onclick="ClearTheme()">X</button>
+<select id="relations" onchange="AddRelation(this.options[this.selectedIndex].innerHTML)">
+  <option value="null"></option>
+	<option value="on">on</option>
+    <option value="left">left of</option>
+    <option value="right">right of</option>
+    <option value="behind">behind</option>
+    <option value="front">in front of</option>
+</select>
+  <input type="text" id="dest" size="17" readonly /><button type="submit" onclick="ClearDest()">X</button>
+<button type="submit" onclick="ClearAll()">Clear All</button>
+</p>
+<p>
+  <input type="text" id="input" size="53"/>
+<button type="submit" onclick="Execute()">Execute</button>
+<button type="submit" onclick="Ask()">Ask</button>
+<button type="submit" onclick="Utter(document.getElementById('input').value)">Utter</button>
+</p>
+<p>
+<button type="submit" onclick="Utter(this.innerHTML)">OK, go on.</button>
+<button type="submit" onclick="Utter(this.innerHTML)">Sorry, I don't know what you mean.</button>
+<button type="submit" onclick="Utter(this.innerHTML)">What did you say?</button>
+<!-- add buttons as needed -->
+</p>
+</div>
+</body>
+</html>
