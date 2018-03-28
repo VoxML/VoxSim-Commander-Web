@@ -68,6 +68,9 @@ function Ask() {
 		if (input.startsWith("put") || input.startsWith("slide")) 	{
 			dict["question"] = "Should I " + input + "?"
 		}
+		else if (input.trim().startsWith("<")) {
+			dict["question"] = "Should I place something " + input.trim() + "?"
+		}
 		else {
 			dict["question"] = input.trim().charAt(0).toUpperCase() + input.trim().slice(1) + "?"
 		}
