@@ -8,6 +8,8 @@ status = {
     "input" : "",
     "question" : "",
     "utter" : "",
+    "show" : "",
+    "hide" : "",
     "clicked" : ""
     }
 status_str = ""
@@ -40,8 +42,8 @@ def index():
     if request.method == 'POST':
         status = request.get_json(silent=True)
         status_str = str(json.dumps(status))
-        print status_str
-        print status['clicked']
+#        print status_str
+#        print status['clicked']
         return render_template('VSCommander.html',s=status)
     else:
         return render_template('VSCommander.html',s=status)

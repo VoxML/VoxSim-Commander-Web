@@ -11,8 +11,11 @@ port = 8220
 lastReceivedData = ""
 verb = ""
 theme = ""
+clicked = ""
 relation = ""
 dest = ""
+show = ""
+hide = ""
 
 setTimeout(refreshServer,100);
 
@@ -31,6 +34,7 @@ function refreshServer() {
 					dest = JSON.parse(this.responseText)["clicked"];
 					document.getElementById("dest").value = dest
 				}
+				
     			document.getElementById("input").value = verb + " " + theme + " " + relation + " " + dest
 			}
     	}
@@ -49,6 +53,8 @@ function Execute() {
 		dict["input"] = command
 		dict["question"] = ""
 		dict["utter"] = ""
+		dict["show"] = ""
+		dict["hide"] = ""
 		dict["theme"] = ""
 		dict["dest"] = ""
 		var data = JSON.stringify(dict)
@@ -75,6 +81,8 @@ function Ask() {
 			dict["question"] = input.trim().charAt(0).toUpperCase() + input.trim().slice(1) + "?"
 		}
 		dict["utter"] = ""
+		dict["show"] = ""
+		dict["hide"] = ""
 		dict["theme"] = ""
 		dict["dest"] = ""	
 		var data = JSON.stringify(dict)
@@ -91,6 +99,44 @@ function Utter(text) {
 		dict["input"] = ""
 		dict["question"] = ""
 		dict["utter"] = text
+		dict["show"] = ""
+		dict["hide"] = ""
+		dict["theme"] = ""
+		dict["dest"] = ""
+		var data = JSON.stringify(dict)
+    	xhttp.send(data);
+	}
+}
+
+function Show(text) {
+	if (text != "") {
+    	var xhttp = new XMLHttpRequest();
+    	xhttp.open("POST", "http://127.0.0.1:" + port + "/server", true);
+    	xhttp.setRequestHeader("Content-Type", "application/json");
+		var dict = {}
+		dict["input"] = ""
+		dict["question"] = ""
+		dict["utter"] = ""
+		dict["show"] = text
+		dict["hide"] = ""
+		dict["theme"] = ""
+		dict["dest"] = ""
+		var data = JSON.stringify(dict)
+    	xhttp.send(data);
+	}
+}
+
+function Hide(text) {
+	if (text != "") {
+    	var xhttp = new XMLHttpRequest();
+    	xhttp.open("POST", "http://127.0.0.1:" + port + "/server", true);
+    	xhttp.setRequestHeader("Content-Type", "application/json");
+		var dict = {}
+		dict["input"] = ""
+		dict["question"] = ""
+		dict["utter"] = ""
+		dict["show"] = ""
+		dict["hide"] = text
 		dict["theme"] = ""
 		dict["dest"] = ""
 		var data = JSON.stringify(dict)
@@ -125,10 +171,13 @@ function ClearAll() {
 	theme = ""
 	relation = ""
 	dest = ""
+	show = ""
+	hide = ""
 	document.getElementById('relations').selectedIndex = 0
 	document.getElementById('theme').value = theme
 	document.getElementById('dest').value = dest
 	document.getElementById('input').value = verb + " " + theme + " " + relation + " " + dest
+	document.getElementById('relations').selectedIndex = 0
 }
 
 </script>
@@ -161,6 +210,15 @@ function ClearAll() {
 <button type="submit" onclick="Utter(this.innerHTML)">OK, go on.</button>
 <button type="submit" onclick="Utter(this.innerHTML)">Sorry, I don't know what you mean.</button>
 <button type="submit" onclick="Utter(this.innerHTML)">What did you say?</button>
+<p>
+<select id="blocks">
+  <option value="null"></option>
+	<!--<option value="block1">block1</option>-->
+	<option value="block2">block2</option>
+</select>
+<button type="submit" onclick="Show(document.getElementById('blocks').options[document.getElementById('blocks').selectedIndex].innerHTML)">Show</button>
+<button type="submit" onclick="Hide(document.getElementById('blocks').options[document.getElementById('blocks').selectedIndex].innerHTML)">Hide</button>
+</p>
 <!-- add buttons as needed -->
 </p>
 </div>
