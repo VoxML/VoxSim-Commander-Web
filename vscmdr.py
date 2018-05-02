@@ -54,16 +54,23 @@ def index():
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(
-                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-                                     description=__doc__
-                                     )
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+            description=__doc__
+            )
     parser.add_argument(
-                         '-p', '--port',
-                         default=8220,
-                         type=int,
-                         action='store',
-                         nargs='?',
-                         help='Specify port number to run the app.'
-                         )
+            '-p', '--port',
+            default=8220,
+            type=int,
+            action='store',
+            nargs='?',
+            help='Specify port number to run the app.'
+            )
+    parser.add_argument(
+            '-s', '--host',
+            default='127.0.0.1',
+            action='store',
+            nargs='?',
+            help='Specify host name for EpiSim to listen to.'
+            )
     args = parser.parse_args()
-    app.run(port=args.port)
+    app.run(host=args.host, port=args.port)
