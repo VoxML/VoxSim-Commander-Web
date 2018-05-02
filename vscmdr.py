@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import str
 from flask import Flask, render_template, request
 import json
 
@@ -27,12 +29,12 @@ def server():
     global status_str
     if request.method == 'GET':
         data = status_str
-        #print data
+        #print(data)
         return data
     elif request.method == 'POST':
         status = request.get_json(silent=True)
         status_str = str(json.dumps(request.get_json(silent=True)))
-        print status_str
+        print(status_str)
         return render_template('VSCommander.html',s=status)
 
 @app.route('/', methods=['GET', 'POST'])
@@ -42,8 +44,8 @@ def index():
     if request.method == 'POST':
         status = request.get_json(silent=True)
         status_str = str(json.dumps(status))
-#        print status_str
-#        print status['clicked']
+#        print(status_str)
+#        print(status['clicked'])
         return render_template('VSCommander.html',s=status)
     else:
         return render_template('VSCommander.html',s=status)
