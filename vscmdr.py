@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import str
 from flask import Flask, render_template, request
 import json
 
@@ -12,7 +14,7 @@ status = {
     "show" : "",
     "hide" : "",
     "clicked" : ""
-    }
+}
 status_str = ""
 
 @app.route('/init', methods=['POST'])
@@ -28,12 +30,12 @@ def server():
     global status_str
     if request.method == 'GET':
         data = status_str
-        #print data
+        #print(data)
         return data
     elif request.method == 'POST':
         status = request.get_json(silent=True)
         status_str = str(json.dumps(request.get_json(silent=True)))
-        print status_str
+        print(status_str)
         return render_template('VSCommander.html',s=status)
 
 @app.route('/', methods=['GET', 'POST'])
@@ -43,8 +45,8 @@ def index():
     if request.method == 'POST':
         status = request.get_json(silent=True)
         status_str = str(json.dumps(status))
-#        print status_str
-#        print status['clicked']
+        #        print(status_str)
+        #        print(status['clicked'])
         return render_template('VSCommander.html',s=status)
     else:
         return render_template('VSCommander.html',s=status)
@@ -57,14 +59,6 @@ if __name__ == '__main__':
                                      description=__doc__
                                      )
     parser.add_argument(
-                     '-s', '--server',
-                     default='localhost',
-                     type=str,
-                     action='store',
-                     nargs='?',
-                     help='Specify host to run the app.'
-                     )
-    parser.add_argument(
                      '-p', '--port',
                      default=8220,
                      type=int,
@@ -72,5 +66,12 @@ if __name__ == '__main__':
                      nargs='?',
                      help='Specify port number to run the app.'
                      )
+    parser.add_argument(
+                     '-s', '--host',
+                     default='127.0.0.1',
+                     action='store',
+                     nargs='?',
+                     help='Specify host name for app to listen to.'
+                     )
     args = parser.parse_args()
-    app.run(host=args.server,port=args.port)
+    app.run(host=args.host, port=args.port)
