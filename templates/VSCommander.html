@@ -16,6 +16,7 @@ relation = ""
 dest = ""
 show = ""
 hide = ""
+anim = ""
 
 setTimeout(refreshServer,100);
 
@@ -53,6 +54,7 @@ function Execute() {
 		dict["input"] = command
 		dict["question"] = ""
 		dict["utter"] = ""
+		dict["anim"] = ""
 		dict["show"] = ""
 		dict["hide"] = ""
 		dict["theme"] = ""
@@ -81,6 +83,7 @@ function Ask() {
 			dict["question"] = input.trim().charAt(0).toUpperCase() + input.trim().slice(1) + "?"
 		}
 		dict["utter"] = ""
+		dict["anim"] = ""
 		dict["show"] = ""
 		dict["hide"] = ""
 		dict["theme"] = ""
@@ -99,6 +102,26 @@ function Utter(text) {
 		dict["input"] = ""
 		dict["question"] = ""
 		dict["utter"] = text
+		dict["anim"] = ""
+		dict["show"] = ""
+		dict["hide"] = ""
+		dict["theme"] = ""
+		dict["dest"] = ""
+		var data = JSON.stringify(dict)
+    	xhttp.send(data);
+	}
+}
+
+function Animate(text) {
+	if (text != "") {
+    	var xhttp = new XMLHttpRequest();
+    	xhttp.open("POST", "http://127.0.0.1:" + port + "/server", true);
+    	xhttp.setRequestHeader("Content-Type", "application/json");
+		var dict = {}
+		dict["input"] = ""
+		dict["question"] = ""
+		dict["utter"] = ""
+		dict["anim"] = text
 		dict["show"] = ""
 		dict["hide"] = ""
 		dict["theme"] = ""
@@ -117,6 +140,7 @@ function Show(text) {
 		dict["input"] = ""
 		dict["question"] = ""
 		dict["utter"] = ""
+		dict["anim"] = ""
 		dict["show"] = text
 		dict["hide"] = ""
 		dict["theme"] = ""
@@ -135,6 +159,7 @@ function Hide(text) {
 		dict["input"] = ""
 		dict["question"] = ""
 		dict["utter"] = ""
+		dict["anim"] = ""
 		dict["show"] = ""
 		dict["hide"] = text
 		dict["theme"] = ""
@@ -210,6 +235,10 @@ function ClearAll() {
 <button type="submit" onclick="Utter(this.innerHTML)">OK, go on.</button>
 <button type="submit" onclick="Utter(this.innerHTML)">Sorry, I don't know what you mean.</button>
 <button type="submit" onclick="Utter(this.innerHTML)">What did you say?</button>
+<p>
+  <input type="text" id="animate" size="53"/>
+<button type="submit" onclick="Animate(document.getElementById('animate').value)">Animate</button>
+</p>
 <p>
 <select id="blocks">
   <option value="null"></option>
