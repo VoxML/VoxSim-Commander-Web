@@ -7,7 +7,6 @@
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
 <script type="text/javascript" language="javascript">
-port = 8220
 lastReceivedData = ""
 verb = ""
 theme = ""
@@ -18,11 +17,16 @@ show = ""
 hide = ""
 anim = ""
 
-setTimeout(refreshServer,100);
+function PageLoaded() {
+	host = window.location.protocol + "//" + window.location.hostname
+	port = window.location.port
+}
 
-function refreshServer() {
+setTimeout(RefreshServer,100);
+
+function RefreshServer() {
 	var xhttp = new XMLHttpRequest();
-	xhttp.open("GET", "http://127.0.0.1:" + port + "/server", true);
+	xhttp.open("GET", host + ":" + port + "/server", true);
 	xhttp.onreadystatechange = function() {
     	if (this.readyState == 4 && this.status == 200) {
 			if ((this.responseText != lastReceivedData) && (JSON.parse(this.responseText)["input"] == "") && (JSON.parse(this.responseText)["question"] == "") && (JSON.parse(this.responseText)["utter"] == "")) {
@@ -41,13 +45,13 @@ function refreshServer() {
     	}
 	};
 	xhttp.send(null)
-	setTimeout(refreshServer,100);
+	setTimeout(RefreshServer,100);
 }
 
 function Execute() {
 	if (document.getElementById('input').value != "") {
 	    var xhttp = new XMLHttpRequest();
-	    xhttp.open("POST", "http://127.0.0.1:" + port + "/server", true);
+	    xhttp.open("POST", host + ":" + port + "/server", true);
 	    xhttp.setRequestHeader("Content-Type", "application/json");
 		var dict = {}
 		var command = document.getElementById('input').value
@@ -68,7 +72,7 @@ function Execute() {
 function Ask() {
 	if (document.getElementById('input').value != "") {
 	    var xhttp = new XMLHttpRequest();
-	    xhttp.open("POST", "http://127.0.0.1:" + port + "/server", true);
+	    xhttp.open("POST", host + ":" + port + "/server", true);
 	    xhttp.setRequestHeader("Content-Type", "application/json");
 		var dict = {}
 		var input = document.getElementById('input').value
@@ -96,7 +100,7 @@ function Ask() {
 function Utter(text) {
 	if (text != "") {
     	var xhttp = new XMLHttpRequest();
-    	xhttp.open("POST", "http://127.0.0.1:" + port + "/server", true);
+    	xhttp.open("POST", host + ":" + port + "/server", true);
     	xhttp.setRequestHeader("Content-Type", "application/json");
 		var dict = {}
 		dict["input"] = ""
@@ -115,7 +119,7 @@ function Utter(text) {
 function Animate(text) {
 	if (text != "") {
     	var xhttp = new XMLHttpRequest();
-    	xhttp.open("POST", "http://127.0.0.1:" + port + "/server", true);
+    	xhttp.open("POST", host + ":" + port + "/server", true);
     	xhttp.setRequestHeader("Content-Type", "application/json");
 		var dict = {}
 		dict["input"] = ""
@@ -134,7 +138,7 @@ function Animate(text) {
 function Show(text) {
 	if (text != "") {
     	var xhttp = new XMLHttpRequest();
-    	xhttp.open("POST", "http://127.0.0.1:" + port + "/server", true);
+    	xhttp.open("POST", host + ":" + port + "/server", true);
     	xhttp.setRequestHeader("Content-Type", "application/json");
 		var dict = {}
 		dict["input"] = ""
@@ -153,7 +157,7 @@ function Show(text) {
 function Hide(text) {
 	if (text != "") {
     	var xhttp = new XMLHttpRequest();
-    	xhttp.open("POST", "http://127.0.0.1:" + port + "/server", true);
+    	xhttp.open("POST", host + ":" + port + "/server", true);
     	xhttp.setRequestHeader("Content-Type", "application/json");
 		var dict = {}
 		dict["input"] = ""
@@ -209,7 +213,7 @@ function ClearAll() {
 </script>
 </head>
 
-<body>
+<body onload="PageLoaded()">
 <div id="show">
 <p><button type="submit" onclick="AddVerb(this.innerHTML)">Put...</button>
 <button type="submit" onclick="AddVerb(this.innerHTML)">Slide...</button>

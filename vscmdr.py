@@ -49,6 +49,7 @@ def index():
         #        print(status['clicked'])
         return render_template('VSCommander.html',s=status)
     else:
+        print(status)
         return render_template('VSCommander.html',s=status)
 
 
